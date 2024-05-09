@@ -1,0 +1,52 @@
+*{
+    color: white;
+}
+
+body{
+    background-color: black;
+    margin: 0px;
+    padding: 0px;
+    display: flex;
+}
+
+body > div{
+    width: 100vw;
+    margin: 1rem;
+    max-height: calc(100vh - 2rem);
+    display: grid;
+}
+
+body > div > div{
+    width: 100%;
+    border: 0.25rem double gray;
+    word-break: break-all;
+}
+
+body > div > div:first-child{
+    max-height: 100%;
+    height: 100%;
+    overflow-y: scroll;
+}
+
+body > div > div:last-child{
+    height: 100%;
+    display: flex;
+}
+
+body > div > div > div{
+    padding: 1rem;
+}
+
+input{
+    background-color: black;
+    border: 1px solid white;
+    padding: 0.5rem;
+    width: 100%;
+}
+
+th,td{
+    text-align: left;
+}
+th{
+    color: lightgreen;
+}

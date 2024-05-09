@@ -1,0 +1,29 @@
+*{
+    color: white;
+}
+body{
+    background-color: black;
+}
+table{
+    max-width: 100vw;
+}
+table, th, td{
+    border: 1px solid grey
+}
+th{
+    text-align: center;
+}
+th, td{
+    padding: 0.5rem;
+    max-width: 100%;
+    min-width: 3rem;
+    word-break: break-all;
+}
+a{
+    font-weight: bold;
+    text-decoration: none;
+    color: green;
+}
+a:hover{
+    color: lightgreen;
+}
