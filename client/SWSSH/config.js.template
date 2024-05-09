@@ -1,0 +1,10 @@
+const config = {
+    "profiles":[
+        {
+            "name": "SUPAR DUPAR SECRET KAY!!!"
+            ,"seedMinSize": 20
+            ,"seedMaxSize": 32
+            ,"superSecretKey": "a6faa96f13a4b818f4008bf88f5910687c798144"
+        }
+    ]
+};
