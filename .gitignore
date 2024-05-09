@@ -10,3 +10,5 @@ config_tunnel.json
 config_relay.json
 
 client/config.js
+
+client/SWSSH/config.js

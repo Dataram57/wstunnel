@@ -1,0 +1,15 @@
+{
+    "hostname": "localhost"
+    ,"port": 80
+    ,"useSSL": false
+    ,"manager":{
+        "password": "pass_manager"
+    }
+    ,"profile":{
+        "password": "pass_profile"
+        ,"keyLength": 64
+        ,"maxIdleTime": 30000
+        ,"checkIdleInterval": 5000
+        ,"controlMessageInterval": 3000
+    }
+}

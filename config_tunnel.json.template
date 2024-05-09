@@ -1,0 +1,17 @@
+{
+    "module": "./interface_SWSSH.js"
+    ,"description": "This is a WS tunneled SSH."
+    ,"password": "xsw2!QAZ"
+    ,"useSSL": true
+    ,"reconnectTime": 10000
+    ,"responseTimeBufferCount": 6
+    ,"requestTimeBufferCount": 6
+    ,"timeBeforeRefresh": 10000
+    ,"tunnels": [
+        {
+            "address": "localhost"
+            ,"useSSL": false
+            ,"password": "pass_profile"
+        }
+    ]
+}

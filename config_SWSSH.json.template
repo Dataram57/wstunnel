@@ -1,0 +1,7 @@
+{
+    "host": "192.168.1.31"
+    ,"port": 22
+    ,"seedMinSize": 20
+    ,"seedMaxSize": 32
+    ,"superSecretKey": "a6faa96f13a4b818f4008bf88f5910687c798144"
+}
