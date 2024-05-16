@@ -2,15 +2,19 @@ node_modules/*
 package-lock.json
 package.json
 client/*/node_modules/*
+test/*
 
 
-config_SWSSH.json
-config_TCP.json
 config_tunnel.json
 
 config_relay.json
 
 client/config.js
 
+config_SWSSH.json
 client/SWSSH/config.js
 
+config_TCP.json
+config_SWTCP.json
+client_TCP/config.json
+client_SWTCP/config.json
