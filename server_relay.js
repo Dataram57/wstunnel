@@ -265,7 +265,7 @@ const server = http.createServer((req, res) => {
                     ,lastMessage: e.lastMessage
                 };
             else
-                e = null;
+                current = null;
             json.push(current)
         }
         QuickAPIResponse(res, JSON.stringify(json));
