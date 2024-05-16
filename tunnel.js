@@ -65,8 +65,11 @@ const GetTunnelHTTPaddress = () => {
         type: appModule.applicationType
         ,description: tunnelConfig.description
     };
-    //password
-    json.password = ProfileProp('password');
+    //password or key
+    if(ProfileProp('key'))
+        json.key = ProfileProp('key');
+    else
+        json.password = ProfileProp('password');
     //timestamp
     json.time = new Date().getTime(); 
     //add json

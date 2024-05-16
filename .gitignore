@@ -5,6 +5,7 @@ client/*/node_modules/*
 
 
 config_SWSSH.json
+config_TCP.json
 config_tunnel.json
 
 config_relay.json
@@ -12,3 +13,4 @@ config_relay.json
 client/config.js
 
 client/SWSSH/config.js
+

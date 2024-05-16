@@ -3,7 +3,7 @@
 
 const config = require('./config_SWSSH.json');
 const { Client } = require('ssh2');
-const {createCipheriv, createDecipheriv, createHash, randomBytes} = require('crypto');
+const CryptoProfile = require('./lib_crypto.js');
 
 //#endregion
 
@@ -13,70 +13,16 @@ const {createCipheriv, createDecipheriv, createHash, randomBytes} = require('cry
 //prepare superSecretKey
 config.superSecretKey = Buffer.from(config.superSecretKey, 'hex');
 
-//Just a useful function
-const Hash_SHA256 = (input) => createHash('sha256').update(input).digest();
-
-//Object that predicts the next key, and allows to encrypt and decrypt a message with it
-//Made to protect SSH messages
-//1. Server sends his seed (waits for client to respond)
-//2. Client sends his seed (waits for server to respond)
-//3. Server launches the application
-const CryptoProfile = class{
-    constructor(){
-        this.key = Buffer.alloc(32);
-        //AES only
-        this.iv = Buffer.alloc(16);
-    }
-
-    SetToBase(){
-        this.key = Buffer.alloc(0);
-        this.NextKey();
-    }
-
-    SetSeed(seed){
-        this.key = seed;
-        this.NextKey();
-    }
-
-    NextKey(){
-        //calculate the next key that the profile will use
-        this.key = Hash_SHA256(Buffer.concat([config.superSecretKey, this.key]));
-        //AES only
-        this.iv = Hash_SHA256(this.key).subarray(0, 16);
-    }
-
-    Encrypt(message){
-        //create cipher
-        const cipher = createCipheriv('aes-256-gcm', this.key, this.iv);
-        //encrypt
-        const result = cipher.update(message);
-        cipher.final();
-        //return with Tag info
-        return Buffer.concat([result, cipher.getAuthTag()]);
-    }
-
-    Decrypt(message){
-        //create decipher
-        const decipher = createDecipheriv('aes-256-gcm', this.key, this.iv);
-        //remove authTag
-        const tag = message.subarray(message.length - 16);
-        message = message.subarray(0, message.length - 16);
-        //decrypt
-        const result = decipher.update(message);
-        //return result
-        return result;
-    }
-};
-
-const cryptoServer = new CryptoProfile();
-const cryptoClient = new CryptoProfile();
+//prepare profiles
+const cryptoServer = new CryptoProfile(config.superSecretKey);
+const cryptoClient = new CryptoProfile(config.superSecretKey);
 
 //#endregion
 
 //================================================================
 //#region Init
 
-const applicationType = "SWSSH"
+const applicationType = "SWSSH";
 let OriginalSend = function(){};
 let Close = function(){};
 const Init = (func_message, func_close) => {
@@ -107,7 +53,7 @@ const onStart = () => {
     //wait for seed
     state = -1;
     //generate seed
-    const seed = randomBytes(config.seedMinSize + Math.floor(Math.random() * (config.seedMaxSize - config.seedMinSize + 1)));
+    const seed = cryptoServer.GenerateRandomSeed(config.seedMinSize, config.seedMaxSize);
     //send seed
     Send(seed);
     //use seed next time

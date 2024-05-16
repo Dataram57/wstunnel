@@ -35,7 +35,7 @@ const GenerateKey = (length) => {
 //#region Session Managment
 
 const TunnelSession = class {
-    constructor(){
+    constructor(key){
         //array info
         this.i = 0;
         //Tunnel info
@@ -45,7 +45,10 @@ const TunnelSession = class {
         //Listening
         this.res = null;
         //WS transfer
-        this.key = GenerateTunnelKey();
+        if(key)
+            this.key = key;
+        else
+            this.key = GenerateTunnelKey();
         this.client = null;
         this.server = null;
         //Life check
@@ -155,8 +158,8 @@ const FindTunnelSession = (key) => {
 };
 
 //just creates a registered tunnel
-const CreateNewTunnelSession = (type, description, reqTime, response, request) => {
-    const ts = new TunnelSession();
+const CreateNewTunnelSession = (type, description, reqTime, response, request, key) => {
+    const ts = new TunnelSession(key);
     //apply data
     ts.i = RegisterTunnelSession(ts);
     ts.type = type;
@@ -171,7 +174,7 @@ const CreateNewTunnelSession = (type, description, reqTime, response, request) =
         controlMessageInterval: config.profile.controlMessageInterval
         ,maxIdleTime: config.profile.maxIdleTime
         ,key: ts.key
-        ,address: (config.useSSL ? 'wss://' : 'ws://') + config.hostname + '/' + ts.key
+        ,address: (config.useSSL ? 'wss://' : 'ws://') + config.hostname + ':' + config.port + '/' + ts.key
         ,requestTime: reqTime
         ,time: new Date().getTime()
     };
@@ -275,13 +278,40 @@ const server = http.createServer((req, res) => {
 
     else if(input && isLeftEqual(url, '/tunnel/')){
         const reqTime = new Date().getTime() - input.time;
-        //check password
-        if(input.password != config.profile.password){
-            QuickAPIResponse(res, 'Wrong password!!!');
-            return;
+        //try to check key
+        if(typeof(input.key) == 'string'){
+            //there is a chance to create multiple tunnels with the same key!!! (but let it be a feature)
+            //check in array
+            let i = 0;
+            for(i = config.profile.keys.length - 1; i >= 0; i--){
+                if(config.profile.keys[i] == input.key)
+                    break;
+            }
+            //check if not found
+            if(i < 0){
+                QuickAPIResponse(res, 'Wrong key!!!');
+                return;
+            }
+            //let the key remain
+        }
+        else{
+            //forget the key
+            input.key = undefined;
+
+            //check password type
+            if(typeof(input.password) != 'string'){
+                QuickAPIResponse(res, 'Wrong password type!!!');
+                return;
+            }
+
+            //check password
+            if(input.password != config.profile.password){
+                QuickAPIResponse(res, 'Wrong password!!!');
+                return;
+            }
         }
         //Create tunnel session
-        CreateNewTunnelSession(input.type, input.description, reqTime, res, req);
+        CreateNewTunnelSession(input.type, input.description, reqTime, res, req, input.key);
     }
 
     //#endregion
@@ -292,11 +322,7 @@ const server = http.createServer((req, res) => {
     else if(input && isLeftEqual(url, '/refresh/')){
         const reqTime = new Date().getTime() - input.time;
         //check basics 
-        if(typeof input.key != 'string'){
-            QuickAPIResponse(res, 'Wrong key!!!');
-            return;
-        }
-        if(input.key.length != config.profile.keyLength){
+        if(typeof(input.key) != 'string'){
             QuickAPIResponse(res, 'Wrong key!!!');
             return;
         }
@@ -336,7 +362,7 @@ wss.on('connection', (ws, req) => {
         key = key.substring(0, key.length - 1);
     key = key.substring(key.lastIndexOf('/') + 1);
     //basic key check
-    if(key.length != config.profile.keyLength){
+    if(typeof(key) != 'string'){
         ws.terminate();
         return;
     }
