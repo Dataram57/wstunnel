@@ -31,7 +31,7 @@ const cryptoClient = new CryptoProfile(config.superSecretKey);
 //================================================================
 //#region Init
 
-const applicationType = "SWSSH"
+const applicationType = "SWTCP";
 let OriginalSend = function(){};
 let Close = function(){};
 const Init = (func_message, func_close) => {
