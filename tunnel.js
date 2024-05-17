@@ -3,12 +3,22 @@
 
 console.clear();
 console.log('================================================================');
+//check config path
+let tunnelConfig;
+if(process.argv.length > 2)
+    tunnelConfig = require(process.argv[process.argv.length - 1]);
+else
+    tunnelConfig = require('./config_tunnel.json');
+//rest
 const axios = require('axios');
 const { Stream } = require('stream');
 const WebSocket = require('ws');
 const StatArray = require('./StatArray.js');
-const tunnelConfig = require('./config_tunnel.json');
+
+//module
+process.moduleConfigPath = tunnelConfig.moduleConfigPath;
 const appModule = require(tunnelConfig.module);
+process.moduleConfigPath = undefined;
 
 //#endregion
 

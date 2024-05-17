@@ -2,7 +2,11 @@
 //#region Requirements
 
 const net = require('net');
-const config = require('./config_TCP.json');
+let config; //= require('./config_TCP.json');
+if(process.moduleConfigPath)
+    config = require(process.moduleConfigPath);
+else
+    config = require('./config_TCP.json');
 
 //#endregion
 
@@ -12,7 +16,7 @@ const config = require('./config_TCP.json');
 const applicationType = "TCP"
 let Send = function(){};
 let Close = function(){};
-const Init = (func_message, func_close) => {
+const Init = (func_message, func_close, configPath) => {
     Send = func_message;
     Close = func_close;
 };

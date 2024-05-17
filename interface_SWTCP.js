@@ -3,7 +3,11 @@
 
 const net = require('net');
 const CryptoProfile = require('./lib_crypto.js');
-const config = require('./config_SWTCP.json');
+let config; //= require('./config_SWTCP.json');
+if(process.moduleConfigPath)
+    config = require(process.moduleConfigPath);
+else
+    config = require('./config_SWTCP.json');
 
 //#endregion
 

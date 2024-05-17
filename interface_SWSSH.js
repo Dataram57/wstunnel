@@ -1,7 +1,12 @@
 //================================================================
 //#region Requirements
 
-const config = require('./config_SWSSH.json');
+let config; // = require('./config_SWSSH.json');
+if(process.moduleConfigPath)
+    config = require(process.moduleConfigPath);
+else
+    config = require('./config_SWSSH.json');
+
 const { Client } = require('ssh2');
 const CryptoProfile = require('./lib_crypto.js');
 
