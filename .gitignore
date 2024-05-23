@@ -15,6 +15,10 @@ config_SWSSH.json
 client/SWSSH/config.js
 
 config_TCP.json
-config_SWTCP.json
 client_TCP/config.json
+
+config_SWTCP.json
 client_SWTCP/config.json
+
+config_SWTCP_2.json
+client_SWTCP_2/config.json
