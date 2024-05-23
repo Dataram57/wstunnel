@@ -93,6 +93,14 @@ const onStart = () => {
             //close
             KillClient();
         });
+
+        // Handle error
+        client.on('error', (e) => {
+            //debug
+            console.log(e);
+            //close
+            KillClient();
+        });
     });
 };
 
