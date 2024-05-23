@@ -162,6 +162,14 @@ const server = net.createServer(socket => {
         CloseTunnel();
     });
 
+    // Event listener for errors
+    tcp.on('error', e => {
+        //debug
+        console.log(e);
+        //close this socket and tunnel too
+        CloseTunnel();
+    });
+
     //Connect to tunnel
     ConnectTunnel();
 });
