@@ -3,7 +3,13 @@
 
 console.clear();
 console.log('================================================================');
-const config = require('./config.json');
+//check config path
+let config;
+if(process.argv.length > 2)
+    config = require(process.argv[process.argv.length - 1]);
+else
+    config = require('./config.json');
+//rest
 const net = require('net');
 const WebSocket = require('ws');
 const CryptoProfile = require('./lib_crypto.js');

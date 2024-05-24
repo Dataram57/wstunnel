@@ -3,9 +3,15 @@
 
 console.clear();
 console.log('================================================================');
+//check config path
+let config;
+if(process.argv.length > 2)
+    config = require(process.argv[process.argv.length - 1]);
+else
+    config = require('./config.json');
+//rest
 const net = require('net');
 const WebSocket = require('ws');
-const config = require('./config.json');
 
 //#endregion
 
