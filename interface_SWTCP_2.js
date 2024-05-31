@@ -7,7 +7,7 @@ let config; //= require('./config_SWTCP.json');
 if(process.moduleConfigPath)
     config = require(process.moduleConfigPath);
 else
-    config = require('./config_SWTCP.json');
+    config = require('./config_SWTCP_2.json');
 
 //#endregion
 
@@ -143,9 +143,11 @@ const SetupSocketEvents = (socket) => {
     //setup message receivment
     socket.on('data', (data) => {
         //forward encrypted message
-        data.length += 2;
-        data.writeInt16LE(socket.key, data.length - 2);
-        Send(data);
+        console.log("Wants to send Length:", data.length);
+        const b = Buffer.alloc(data.length + 2);
+        data.copy(b);
+        b.writeInt16LE(socket.key, b.length - 2);
+        Send(b);
     });
 
     // Handle connection close
@@ -193,6 +195,7 @@ const onMessage = (message) => {
     //forward message to client
     //check key
     key = message.readInt16LE(message.length - 2);
+    console.log("Key:", key);
     if(key < 0){
         //convert key
         key = -(key + 1);
@@ -216,7 +219,9 @@ const onMessage = (message) => {
             RegisterSocket(socket);
         }
         //forward the message (without the key)
-        message.length -= 2;
+        message = message.slice(0, message.length - 2);
+        console.log(message.toString());
+        console.log("Forwarding length:", message.length);
         socket.write(message);
     }
 };

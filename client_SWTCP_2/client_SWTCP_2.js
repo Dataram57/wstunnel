@@ -43,19 +43,17 @@ const waitingDataToTransfer = [];
 const BumpWaitingData = () => {
     //bump data
     for(let i = 0; i < waitingDataToTransfer.length; i++)
-        Send(waitingDataToTransfer[i]);
+        ws.send(waitingDataToTransfer[i]);
     //clear data
     waitingDataToTransfer.length = 0;
 };
 
 const Send = (data) => {
-    if(isTunnelWorking){
-        //encrypt and send and next key
+    if(cryptoServer.isSeedApplied)
         ws.send(cryptoClient.Encrypt(data));
-        cryptoClient.NextKey();
-    }
     else
-        waitingDataToTransfer.push(data);
+        waitingDataToTransfer.push(cryptoClient.Encrypt(data));
+    cryptoClient.NextKey();
 };
 
 //#endregion
@@ -158,24 +156,13 @@ const NextSocketKey = () => {
 //================================================================
 //#region Tunnel Manager
 
-const TunnelCheck = () => {
-    //try to close the tunnel if there is not any socket that demands a connection
-    if(!socketChainHead){
-        //close ws
-        if(ws){
-            ws.close();
-            ws = null;
-        }
-        //
-    }
-};
+
 
 //#endregion
 
 //================================================================
 //#region WS relay connector
 
-let isTunnelWorking = false;
 let ws;
 
 const SendSeed = () => {
@@ -195,10 +182,7 @@ const ConnectTunnel = () => {
     ws = new WebSocket(config.wsaddress);
     
     //setup events
-    ws.on('open', () => {
-        //log
-        //console.log('Tunnel Locked.');
-    });
+    ws.on('open', () => {});
     
     // Event listener for incoming messages from the server
     ws.on('message', (data) => {
@@ -215,20 +199,25 @@ const ConnectTunnel = () => {
 
             //forward the message
             key = data.readInt16LE(data.length - 2);
+            console.log("Key:", key);
             if(key < 0){
                 //convert key
                 key = -(key + 1);
                 //Kill without a message
+                console.log("Removing socket:", key);
                 if(socket = RemoveSocketByKey(key)){
                     socket.key = -1;
                     socket.destroy();
+                    console.log("Removed socket:", key);
                 }
             }
             else{
                 //find socket
                 if(socket = FindSocket(key)){
                     //forward the message (without the key)
-                    data.length -= 2;
+                    data = data.slice(0, data.length - 2);
+                    console.log(data.toString());
+                    console.log("Forwarding length:", data.length);
                     socket.write(data);
                 }
             }
@@ -236,7 +225,6 @@ const ConnectTunnel = () => {
         else{
             //apply seed
             cryptoServer.SetSeed(data);
-
             //bump waiting data
             BumpWaitingData();
         }
@@ -244,34 +232,30 @@ const ConnectTunnel = () => {
     
     // Event listener for WebSocket connection closure
     ws.on('close', () => {
-        //close tcp
+        //destroy tcps and ws
         CloseTunnel();
     });
 
     // Event listener for WebSocket connection errors
     ws.on('error', (error) => {
-        //destroy tcp and ws
+        //destroy tcps and ws
         console.log('WebSocket error:', error);
         CloseTunnel();
     });
 };
 
 const CloseTunnel = () => {
-    //mark tunnel as closed(ready for a next connection)
-    isTunnelWorking = false;
     //close ws
     if(ws){
         ws.close();
         ws = null;
     }
-    //close tcp socket
-    if(tcp){
-        tcp.destroy();
-        tcp = null;
+    //close tcp sockets
+    while(socketChainHead){
+        socketChainHead.key = -1;
+        socketChainHead.destroy();
+        socketChainHead = socketChainHead.chainFront;
     }
-
-    //log
-    //console.log('Tunnel Unlocked.');
 };
 
 //#endregion
@@ -280,19 +264,20 @@ const CloseTunnel = () => {
 //================================================================
 //#region TCP local server
 
-let tcp;
-
 const server = net.createServer(socket => {
     //register this socket
     socket.key = NextSocketKey();
+    socket.chainFront = null;
     RegisterSocket(socket);
+    console.log("New socket:", socket.key);
 
     // Event listener for incoming data from clients
     socket.on('data', data => {
         //forward message with the socket index to the tunnel
-        data.length += 2;
-        data.writeInt16LE(socket.key, data.length - 2);
-        Send(data);
+        const b = Buffer.alloc(data.length + 2);
+        data.copy(b);
+        b.writeInt16LE(socket.key, b.length - 2);
+        Send(b);
     });
 
     // Event listener for client disconnection
@@ -307,6 +292,10 @@ const server = net.createServer(socket => {
         //kill this socket
         KillSocket(socket);
     });
+
+    //connect to the tunnel if is the first in the chain
+    if(!ws)
+        ConnectTunnel();
 });
 
 // Start the server and listen on a specific port
