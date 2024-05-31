@@ -182,7 +182,7 @@ const server = net.createServer(socket => {
 
 // Start the server and listen on a specific port
 server.listen(config.port, config.host, () => {
-    console.log(`TCP tunnel client started on ${config.host}:${config.port}`);
+    console.log(`SWTCP tunnel client started on ${config.host}:${config.port}`);
 });
 
 //#endregion
