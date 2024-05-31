@@ -53,7 +53,7 @@ const Send = message => {
 //================================================================
 //#region Socket Chain
 
-let socketChainHead;
+let socketChainHead = null;
 
 const RegisterSocket = (socket) => {
     socket.chainFront = socketChainHead;
@@ -106,10 +106,11 @@ const FindSocket = (key) => {
         //check key
         if(obj.key == key){
             //move on the top of the chain
-            if(last)
+            if(last){
                 last.chainFront = obj.chainFront;
-            obj.chainFront = socketChainHead;
-            socketChainHead = obj;
+                obj.chainFront = socketChainHead;
+                socketChainHead = obj;
+            }
             return obj;
         }
         //next

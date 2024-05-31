@@ -61,7 +61,7 @@ const Send = (data) => {
 //================================================================
 //#region Socket Chain
 
-let socketChainHead;
+let socketChainHead = null;
 
 const RegisterSocket = (socket) => {
     socket.chainFront = socketChainHead;
@@ -103,10 +103,6 @@ const RemoveSocketByKey = (key) => {
     return null;
 };
 
-const RemoveAllSockets = () => {
-    socketChainHead = null;
-};
-
 const FindSocket = (key) => {
     let last = null;
     let obj = socketChainHead;
@@ -114,10 +110,11 @@ const FindSocket = (key) => {
         //check key
         if(obj.key == key){
             //move on the top of the chain
-            if(last)
+            if(last){
                 last.chainFront = obj.chainFront;
-            obj.chainFront = socketChainHead;
-            socketChainHead = obj;
+                obj.chainFront = socketChainHead;
+                socketChainHead = obj;
+            }
             return obj;
         }
         //next
@@ -150,13 +147,6 @@ const NextSocketKey = () => {
         socketLastKey = 0;
     return socketLastKey;
 };
-
-//#endregion
-
-//================================================================
-//#region Tunnel Manager
-
-
 
 //#endregion
 
@@ -245,6 +235,7 @@ const ConnectTunnel = () => {
 };
 
 const CloseTunnel = () => {
+    console.log("Closing tunnel");
     //close ws
     if(ws){
         ws.close();
@@ -256,10 +247,10 @@ const CloseTunnel = () => {
         socketChainHead.destroy();
         socketChainHead = socketChainHead.chainFront;
     }
+    console.log("Closed tunnel");
 };
 
 //#endregion
-
 
 //================================================================
 //#region TCP local server
