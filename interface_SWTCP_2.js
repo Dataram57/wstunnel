@@ -144,7 +144,6 @@ const SetupSocketEvents = (socket) => {
     //setup message receivment
     socket.on('data', (data) => {
         //forward encrypted message
-        console.log("Wants to send Length:", data.length);
         const b = Buffer.alloc(data.length + 2);
         data.copy(b);
         b.writeInt16LE(socket.key, b.length - 2);
@@ -159,7 +158,6 @@ const SetupSocketEvents = (socket) => {
 
     // Handle connection close
     socket.on('error', e => {
-        console.log(e);
         //Close socket procedure
         KillSocket(socket);
     });
@@ -196,7 +194,6 @@ const onMessage = (message) => {
     //forward message to client
     //check key
     key = message.readInt16LE(message.length - 2);
-    console.log("Key:", key);
     if(key < 0){
         //convert key
         key = -(key + 1);
@@ -221,8 +218,6 @@ const onMessage = (message) => {
         }
         //forward the message (without the key)
         message = message.slice(0, message.length - 2);
-        console.log(message.toString());
-        console.log("Forwarding length:", message.length);
         socket.write(message);
     }
 };

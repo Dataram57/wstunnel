@@ -189,16 +189,13 @@ const ConnectTunnel = () => {
 
             //forward the message
             key = data.readInt16LE(data.length - 2);
-            console.log("Key:", key);
             if(key < 0){
                 //convert key
                 key = -(key + 1);
                 //Kill without a message
-                console.log("Removing socket:", key);
                 if(socket = RemoveSocketByKey(key)){
                     socket.key = -1;
                     socket.destroy();
-                    console.log("Removed socket:", key);
                 }
             }
             else{
@@ -206,8 +203,6 @@ const ConnectTunnel = () => {
                 if(socket = FindSocket(key)){
                     //forward the message (without the key)
                     data = data.slice(0, data.length - 2);
-                    console.log(data.toString());
-                    console.log("Forwarding length:", data.length);
                     socket.write(data);
                 }
             }
@@ -235,7 +230,6 @@ const ConnectTunnel = () => {
 };
 
 const CloseTunnel = () => {
-    console.log("Closing tunnel");
     //close ws
     if(ws){
         ws.close();
@@ -247,7 +241,6 @@ const CloseTunnel = () => {
         socketChainHead.destroy();
         socketChainHead = socketChainHead.chainFront;
     }
-    console.log("Closed tunnel");
 };
 
 //#endregion
@@ -260,7 +253,6 @@ const server = net.createServer(socket => {
     socket.key = NextSocketKey();
     socket.chainFront = null;
     RegisterSocket(socket);
-    console.log("New socket:", socket.key);
 
     // Event listener for incoming data from clients
     socket.on('data', data => {
