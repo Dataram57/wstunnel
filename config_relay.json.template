@@ -1,6 +1,6 @@
 {
     "hostname": "localhost"
-    ,"port": 80
+    ,"port": 8080
     ,"useSSL": false
     ,"manager":{
         "password": "pass_manager"
@@ -11,5 +11,10 @@
         ,"maxIdleTime": 30000
         ,"checkIdleInterval": 5000
         ,"controlMessageInterval": 3000
+        ,"keys":[
+            "static_key1"
+            ,"static_key2"
+            ,"static_key3"
+        ]
     }
 }

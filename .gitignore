@@ -22,3 +22,5 @@ client_SWTCP/config.json
 
 config_SWTCP_2.json
 client_SWTCP_2/config.json
+
+deploy/*

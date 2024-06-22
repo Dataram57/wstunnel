@@ -28,9 +28,32 @@ App_A  <---->  tunnel.js  <---->  server_realy.js  <---->  client_app  <---->  A
 ## What is `SWTCP_2`?
 `SWTCP_2` (Securely Wrapped TCP) is a sub-protocol that can tunnel any TCP application running on a specific port, through the wstunnel. It is a upgraded and much more safe version of the `SWTCP` which couldn't handle multiple TCP sockets.
 
-## `Relay Server`
+## First Steps
+Run Shell or PowerShell, and cd to the wstunnel directory:
+```
+cd
+git clone https://github.com/Dataram57/wstunnel.git
+cd wstunnel
+```
 
-...wip
+## `Relay Server`
+Run these commands in your Shell or PowerShell to create a folder for the `Relay Server`.
+```
+mkdir deploy
+mkdir deploy/server_relay
+cp ./server_relay.js ./deploy/server_relay/server_relay.js
+cp ./config_relay.json.template ./deploy/server_relay/config_relay.json
+cd ./deploy/server_relay
+npm init -y
+npm i ws
+```
+
+Edit `config_relay.js`, and adjust the config to your needs. This tutorial will leave everything as it is.
+
+Run the `Relay Server`:
+```
+node ./server_relay.js
+```
 
 ### `Client - Relay Server Panel`
 
