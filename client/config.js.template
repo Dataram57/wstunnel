@@ -1,0 +1,5 @@
+const config = {
+    "address": "localhost:8080"
+    ,"useSSL": false
+    ,"password": "pass_manager"
+};

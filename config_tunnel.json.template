@@ -1,17 +1,22 @@
 {
-    "module": "./interface_SWSSH.js"
-    ,"description": "This is a WS tunneled SSH."
-    ,"password": "xsw2!QAZ"
-    ,"useSSL": true
+    "module": "./interface_SWTCP_2.js"
+    ,"description": "This is a WS tunneled TCP server running on port 80."
+    ,"password": "pass_manager_inheritable_if_not_declared"
+    ,"useSSL": false
     ,"reconnectTime": 10000
     ,"responseTimeBufferCount": 6
     ,"requestTimeBufferCount": 6
     ,"timeBeforeRefresh": 10000
     ,"tunnels": [
         {
+            "address": ""
+            ,"useSSL": false
+            ,"key": "static_key1"
+        }
+        ,{
             "address": "localhost"
             ,"useSSL": false
-            ,"password": "pass_profile"
+            ,"password": "pass_manager"
         }
     ]
 }

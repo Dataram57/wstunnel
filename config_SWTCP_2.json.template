@@ -1,7 +1,6 @@
 {
     "host": "127.0.0.1"
-    ,"port": 5757
-    ,"wsaddress": "ws://localhost:8080/static_key1"
+    ,"port": 80
     ,"seedMinSize": 20
     ,"seedMaxSize": 32
     ,"superSecretKey": "2bb80d537b1da3e38bd30361aa855686bde0eacd7162fef6a25fe97bf527a25b"
