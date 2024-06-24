@@ -129,7 +129,7 @@ So, if you have left every config as it was, and have run the `Private Server` t
 
 | Name |  Private Server | Client | Description |
 | :--: | :--: | :--: | :--: |
-| `TEST` | `interface_TEST.js` | `client/TEST` | a |
+| `TEST` | `interface_TEST.js` | `client/TEST` | Will send you back the same message it has received through WS. |
 | `SWSSH` | `interface_SWSSH.js` <br> Install: `ssh2` <br> Configure: `config_SWSSH.json` | `client/SWSSH` <br> Install: `xterm` <br> Configure: `config.js`  | Pseudo SSH... This is just a tunneled terminal (SSH Client). |
 | `TCP` | `interface_TCP.js` <br> Configure: `config_TCP.json` | `client_TCP/client_TCP.js` <br> Install: `ws` <br> Configure: `config.json` | Tunnels single TCP for a specific port socket. |
 | `SWTCP` | `interface_SWTCP.js` <br> Configure: `config_SWTCP.json` | `client_SWTCP/client_SWTCP.js` <br> Install: `ws` <br> Configure: `config.json` | Tunnels single TCP sockets for a specific port using symmetric encryption. |
