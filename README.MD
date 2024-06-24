@@ -97,7 +97,7 @@ Edit `config_tunnel.json`, and adjust the config to your needs. This tutorial wi
 
 Do the same with `config_SWTCP_2.json`.
 
-Run the `Tunnel`:
+Run the tunnel to the `Private Server`:
 ```
 node ./tunnel.js
 ```
