@@ -83,12 +83,13 @@ Go back to the `/wstunnel` path and paste:
 mkdir deploy/tunnel
 cp ./tunnel.js ./deploy/tunnel/tunnel.js
 cp ./lib_crypto.js ./deploy/tunnel/lib_crypto.js
+cp ./StatArray.js ./deploy/tunnel/StatArray.js
 cp ./config_tunnel.json.template ./deploy/tunnel/config_tunnel.json
 cp ./interface_SWTCP_2.js ./deploy/tunnel/interface_SWTCP_2.js
 cp ./config_SWTCP_2.json.template ./deploy/tunnel/config_SWTCP_2.json
 cd ./deploy/tunnel
 npm init -y
-npm i ws
+npm i ws axios
 ```
 
 *This will create a `Private Server` package.*
