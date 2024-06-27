@@ -9,12 +9,12 @@
     ,"timeBeforeRefresh": 10000
     ,"tunnels": [
         {
-            "address": ""
+            "address": "localhost:8080"
             ,"useSSL": false
             ,"key": "static_key1"
         }
         ,{
-            "address": "localhost"
+            "address": "localhost:8080"
             ,"useSSL": false
             ,"password": "pass_manager"
         }
