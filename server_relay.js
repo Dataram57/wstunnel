@@ -103,6 +103,8 @@ const TunnelSession = class {
             this.server.close();
             this.server = null;
         }
+        //delete this
+        delete this;
     }
 
     LifeCheck(){
