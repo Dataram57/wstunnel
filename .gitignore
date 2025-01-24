@@ -3,7 +3,7 @@ package-lock.json
 package.json
 client/*/node_modules/*
 test/*
-
+deploy/*
 
 config_tunnel.json
 
@@ -23,4 +23,4 @@ client_SWTCP/config.json
 config_SWTCP_2.json
 client_SWTCP_2/config.json
 
-deploy/*
+config_SWTCP_2_SOCK5.json
