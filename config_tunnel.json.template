@@ -1,5 +1,6 @@
 {
     "module": "./interface_SWTCP_2.js"
+    ,"moduleConfigPath": "./config_SWTCP_2.json"
     ,"description": "This is a WS tunneled TCP server running on port 80."
     ,"password": "pass_manager_inheritable_if_not_declared"
     ,"useSSL": false

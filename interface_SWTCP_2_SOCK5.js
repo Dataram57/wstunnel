@@ -141,13 +141,6 @@ const KillSocket = (socket) => {
 //================================================================
 //#region SOCK5 Server
 
-/*
-clientSocket.onData(data);
-clientSocket.onClose();
-clientSocket.write(data);
-clientSocket.end();
-*/
-
 const HandleSocketConnetion = clientSocket => {
     // Initial handshake
     clientSocket.onData = data => {
