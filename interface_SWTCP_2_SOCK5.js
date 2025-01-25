@@ -160,6 +160,7 @@ const HandleSocketConnetion = clientSocket => {
                 } else if (addressType === 3) { // Domain name
                     const domainLength = request[4];
                     address = request.slice(5, 5 + domainLength).toString('utf-8');
+                    //console.log(address);
                 } else {
                     clientSocket.end();
                     return;
@@ -285,6 +286,7 @@ const SocketConnection = class {
     }
 
     end(){
+        //console.log("END!!!!!!!");
         if(this.key >= 0)
             KillSocket(this);
     }
