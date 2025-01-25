@@ -133,7 +133,7 @@ const KillSocket = (socket) => {
     RemoveSocket(socket);
     socket.key = -1;
     //close socket
-    socket.destroy();
+    socket.end();
 };
 
 //#endregion
@@ -146,17 +146,16 @@ clientSocket.onData(data);
 clientSocket.onClose();
 clientSocket.write(data);
 clientSocket.end();
-clientSocket.pipe(remoteSocket);???
 */
 
-const HandleClient = clientSocket => {
+const HandleSocketConnetion = clientSocket => {
     // Initial handshake
-    clientSocket.once('data', (data) => {
+    clientSocket.onData = data => {
         // Reply with no authentication required
         clientSocket.write(Buffer.from([0x05, 0x00]));
 
         // Request details
-        clientSocket.once('data', (request) => {
+        clientSocket.onData = request => {
             const version = request[0];
             const command = request[1];
             const addressType = request[3];
@@ -188,13 +187,26 @@ const HandleClient = clientSocket => {
                     response.writeUInt16BE(0, 8); // Bind port (0)
                     clientSocket.write(response);
 
-                    // Relay data between client and target
-                    clientSocket.pipe(remoteSocket);
-                    remoteSocket.pipe(clientSocket);
+                    // Relay data between client and target using write
+                    clientSocket.onData = data => {
+                        remoteSocket.write(data);
+                    };
+
+                    remoteSocket.on('data', (data) => {
+                        clientSocket.write(data);
+                    });
                 });
 
                 remoteSocket.on('error', (err) => {
                     console.error(`Connection error: ${err}`);
+                    clientSocket.end();
+                });
+
+                clientSocket.onClose = () => {
+                    remoteSocket.end();
+                };
+
+                remoteSocket.on('close', () => {
                     clientSocket.end();
                 });
             } else if (command === 0x03) { // UDP ASSOCIATE
@@ -232,7 +244,7 @@ const HandleClient = clientSocket => {
                     clientSocket.write(response);
                 });
 
-                clientSocket.on('data', (data) => {
+                clientSocket.onData = data => {
                     // Forward UDP packets from the client to the target
                     const targetAddress = data.slice(4, 8).join('.');
                     const targetPort = data.readUInt16BE(8);
@@ -243,45 +255,52 @@ const HandleClient = clientSocket => {
                             console.error(`UDP send error: ${err}`);
                         }
                     });
-                });
+                };
 
-                clientSocket.on('close', () => {
+                clientSocket.onClose = () => {
                     udpSocket.close();
-                });
+                };
             } else {
                 clientSocket.end();
             }
-        });
-    });
+        };
+    };
+    
+    //clientSocket.onError = err => {
+    //    console.error(`Client error: ${err}`);
+    //};
+};
+
+const SocketConnection = class {
+    constructor(key){
+        //info
+        this.key = key;
+        //chain
+        this.chainFront = null;
+        //events
+        this.onData = () => {};
+        this.onClose = () => {};
+        //additional
+        HandleSocketConnetion(this);
+    }
+
+    write(data){
+        const b = Buffer.alloc(data.length + 2);
+        data.copy(b);
+        b.writeInt16LE(this.key, b.length - 2);
+        Send(b);
+    }
+
+    end(){
+        if(this.key >= 0)
+            KillSocket(this);
+    }
 };
 
 //#endregion
 
 //================================================================
 //#region Functions
-
-const SetupSocketEvents = (socket) => {
-    //setup message receivment
-    socket.on('data', (data) => {
-        //forward encrypted message
-        const b = Buffer.alloc(data.length + 2);
-        data.copy(b);
-        b.writeInt16LE(socket.key, b.length - 2);
-        Send(b);
-    });
-
-    // Handle connection close
-    socket.on('close', () => {
-        //Close socket procedure
-        KillSocket(socket);
-    });
-
-    // Handle connection close
-    socket.on('error', e => {
-        //Close socket procedure
-        KillSocket(socket);
-    });
-};
 
 const onStart = () => {
     //Reset the socket array
@@ -320,7 +339,7 @@ const onMessage = (message) => {
         //Kill without a message
         if(socket = RemoveSocketByKey(key)){
             socket.key = -1;
-            socket.destroy();
+            socket.end();
         }
     }
     else{
@@ -328,17 +347,13 @@ const onMessage = (message) => {
         socket = FindSocket(key);
         if(!socket){
             //create new socket
-            socket = new net.Socket();
-            socket.key = key;
-            socket.connect(config.port, config.host, () => {
-                SetupSocketEvents(socket);
-            });
+            socket = new SocketConnection(key);
             //assign to chain
             RegisterSocket(socket);
         }
         //forward the message (without the key)
         message = message.slice(0, message.length - 2);
-        socket.write(message);
+        socket.onData(message);
     }
 };
 
@@ -346,7 +361,7 @@ const onEnd = () => {
     //Kill every socket in the chain without a message
     while(socketChainHead){
         socketChainHead.key = -1;
-        socketChainHead.destroy();
+        socketChainHead.end();
         socketChainHead = socketChainHead.chainFront;
     }
 };
