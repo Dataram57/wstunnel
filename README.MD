@@ -126,6 +126,10 @@ node ./client_SWTCP_2.js
 
 So, if you have left every config as it was, and have run the `Private Server` tunnel, `Relay Server` and the `Client`, then you should be able visit the same server running on `localhost:80` at `localhost:5757` on the same machine.
 
+# No Relay
+
+There is a script called `server_single.js` and config `config_single.json`, which create a server that is both the `Private Server` and the `Relay Server`. But it only allows 1 web socket connection to be handled.
+
 # All Sub-Protocols
 
 | Name |  Private Server | Client | Description |
