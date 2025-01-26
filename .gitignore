@@ -24,3 +24,5 @@ config_SWTCP_2.json
 client_SWTCP_2/config.json
 
 config_SWTCP_2_SOCK5.json
+
+config_single.json

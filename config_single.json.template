@@ -1,0 +1,7 @@
+{
+    "hostname": "localhost"
+    ,"port": 8080
+    ,"key": "static_key1"
+    ,"module": "./interface_SWTCP_2.js"
+    ,"moduleConfigPath": "./config_SWTCP_2.json"
+}
